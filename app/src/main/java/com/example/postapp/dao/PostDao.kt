@@ -13,9 +13,9 @@ interface PostDao {
     @Delete
     suspend fun delete (post : Post)
 
-    @Query("Select * from post_table order by id ASC")
+    @Query("Select * from post_table order by timeSavedAt DESC")
     fun getAllPosts() : LiveData<List<Post>>
 
-    @Query("SELECT * FROM post_table WHERE title LIKE :searchQuery OR description LIKE :searchQuery")
+    @Query("SELECT * FROM post_table WHERE title LIKE :searchQuery OR description LIKE :searchQuery order by timeSavedAt DESC")
     fun searchDatabase(searchQuery: String): LiveData<List<Post>>
 }

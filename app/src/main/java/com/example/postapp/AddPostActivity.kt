@@ -13,27 +13,26 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.postapp.databinding.ActivityAddPostBinding
+import com.example.postapp.utils.InternalStorageUtils
 import com.example.postapp.viewmodels.AddPostViewModel
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+
 class AddPostActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddPostBinding
-    private val viewModel: AddPostViewModel by viewModels()
+    private lateinit var viewModel: AddPostViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        viewModel = ViewModelProvider(this,
-//            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-//        ).get(AddPostViewModel::class.java)
+        viewModel = ViewModelProvider(this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        ).get(AddPostViewModel::class.java)
 
         binding.btnChooseFromGallery.setOnClickListener{
             openImageChooser()
@@ -44,12 +43,18 @@ class AddPostActivity : AppCompatActivity() {
         }
 
         binding.btnAddPostSubmit.setOnClickListener {
-            viewModel.addPost(
-                binding.ETaddPostTitle.text.toString(),
-                binding.ETaddPostDescription.text.toString()
-            )
-            Toast.makeText(baseContext, "done!!", Toast.LENGTH_SHORT).show()
-            finish()
+            val title = binding.ETaddPostTitle.text.toString()
+            val description = binding.ETaddPostDescription.text.toString()
+            if(title.isNotEmpty() and description.isNotEmpty()) {
+                viewModel.addPost(
+                    title,
+                    description
+                )
+                finish()
+            }
+            else{
+                Toast.makeText(this,"Title/Description empty",Toast.LENGTH_SHORT).show()
+            }
         }
         viewModel.imageFileName.observe(this,{
             if(it.isNullOrEmpty()) {
@@ -58,7 +63,6 @@ class AddPostActivity : AppCompatActivity() {
             else{
                 val imgBitmap = viewModel.loadPhotoFromInternalStorage(it)
                 if(imgBitmap != null){
-                    Log.d(TAG, "onCreate: issues here")
                     binding.ivAddPostSelectedPicture.visibility = View.VISIBLE
                     binding.ivAddPostSelectedPicture.setImageBitmap(imgBitmap)
                 }
@@ -67,12 +71,8 @@ class AddPostActivity : AppCompatActivity() {
         )
     }
 
-
-
-
-
     val takePhoto = registerForActivityResult(ActivityResultContracts.TakePicturePreview())  {
-        val filename = "imgSaved${System.currentTimeMillis()}+.jpg"
+        val filename = InternalStorageUtils.getImageFileName()
         val isSavedSuccessfully = it?.let { it1 ->
             viewModel.savePhotoToInternalStorage(filename,
                 it1
@@ -104,10 +104,10 @@ class AddPostActivity : AppCompatActivity() {
                 } else {
                     MediaStore.Images.Media.getBitmap(baseContext.contentResolver, selectedImageUri)
                 }
-                val filename = "imgSaved${System.currentTimeMillis()}.jpg"
+                val filename = InternalStorageUtils.getImageFileName()
+
                 val isSaved = viewModel.savePhotoToInternalStorage(filename,bitmap)
                 if(isSaved){
-                    Log.d(TAG, "Dome?: dd")
                     viewModel.updateImgFile(filename)
                 }
             }

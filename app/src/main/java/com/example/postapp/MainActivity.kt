@@ -1,5 +1,6 @@
 package com.example.postapp
 
+import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,17 +15,22 @@ import com.example.postapp.viewmodels.PostMainViewModel
 import android.widget.Toast
 
 import android.app.ListActivity
-import androidx.activity.viewModels
+import android.net.Uri
+import androidx.core.content.ContextCompat
 
 import androidx.recyclerview.widget.RecyclerView
 
 import androidx.recyclerview.widget.ItemTouchHelper
-import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import androidx.core.content.FileProvider
 
-@AndroidEntryPoint
+
+
+
+
 class MainActivity : AppCompatActivity(),  SearchView.OnQueryTextListener {
 
-    private val viewModel: PostMainViewModel by viewModels()
+    private lateinit var viewModel: PostMainViewModel
     private lateinit var binding : ActivityMainBinding
     private lateinit var adapter : PostMainRVAdapter
 
@@ -37,10 +43,9 @@ class MainActivity : AppCompatActivity(),  SearchView.OnQueryTextListener {
         adapter = PostMainRVAdapter(applicationContext)
         binding.postMainRv.adapter = adapter
 
-
-//        viewModel = ViewModelProvider(this,
-//            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-//        ).get(PostMainViewModel::class.java)
+        viewModel = ViewModelProvider(this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        ).get(PostMainViewModel::class.java)
 
         viewModel.getAllPost().observe(this, Observer {it1->
             it1?.let {
@@ -56,8 +61,6 @@ class MainActivity : AppCompatActivity(),  SearchView.OnQueryTextListener {
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.postMainRv)
     }
-
-
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         return true
@@ -105,18 +108,17 @@ class MainActivity : AppCompatActivity(),  SearchView.OnQueryTextListener {
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-            Toast.makeText(baseContext, "on Swiped ", Toast.LENGTH_SHORT).show()
-            //Remove swiped item from list and notify the RecyclerView
             val position = viewHolder.adapterPosition
             when (swipeDir){
                 ItemTouchHelper.LEFT->{
                     viewModel.deletePost(position)
                 }
                 ItemTouchHelper.RIGHT->{
-
+                    val intent = viewModel.sharePost(position)
+                    startActivity(intent)
+                    adapter.notifyItemRemoved(position)
                 }
             }
         }
     }
-
 }

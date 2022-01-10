@@ -9,7 +9,7 @@ import java.io.File
 
 class InternalStorageUtils() {
     companion object{
-
+        fun getImageFileName() : String = "imgSaved${System.currentTimeMillis()}.jpg"
 
     }
 }
