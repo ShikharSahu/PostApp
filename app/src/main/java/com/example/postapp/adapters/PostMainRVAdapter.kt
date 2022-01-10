@@ -1,14 +1,23 @@
 package com.example.postapp.adapters
 
+import android.content.ContentValues
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.postapp.databinding.PostRvRowItemBinding
 import com.example.postapp.models.Post
 import com.example.postapp.utils.TimeUtils
+import java.io.File
+import java.lang.Exception
 
-class PostMainRVAdapter : RecyclerView.Adapter<PostMainRVAdapter.PostViewHolder> (){
+class PostMainRVAdapter(val context: Context) : RecyclerView.Adapter<PostMainRVAdapter.PostViewHolder> (){
 
     private val allPostsList = ArrayList<Post>()
 
@@ -38,13 +47,38 @@ class PostMainRVAdapter : RecyclerView.Adapter<PostMainRVAdapter.PostViewHolder>
         }
         else{
             currentHolderBinding.postImage.visibility = View.VISIBLE
+            try{
+                val currentImageFile = loadPhotoFromInternalStorage(currentPost.imageFile)
+                currentHolderBinding.postImage.setImageBitmap(currentImageFile)
+            }catch (e : Exception){}
         }
 //        currentHolderBinding.imageView.
     }
+    fun loadPhotoFromInternalStorage(filename: String) : Bitmap? {
+//        val imgFiles = filesDir.listFiles()
+//        for(a in imgFiles){
+//            Log.d(TAG, "loadPhotoFromInternalStorage: ${a.absolutePath}")
+//        }
+//        return null
+//        Log.d(TAG, "loadPhotoFromInternalStorage: ${imgFile.canonicalPath}")
+//
+        val imgFile = File(context.filesDir, filename)
+        if(imgFile.exists()){
+            val imgByteArray = imgFile.readBytes()
+            Log.d(ContentValues.TAG, "loadPhotoFromInternalStorage: loading from internal $filename" )
+            return BitmapFactory.decodeByteArray(imgByteArray,0,imgByteArray.size)
+        }
+        else{
+            Log.d(ContentValues.TAG, "loadPhotoFromInternalStorage: doesn't exist")
+        }
+        return null
+    }
 
-    fun updateList( notes : List <Post>) {
+
+
+    fun updateList( posts: List <Post>) {
         allPostsList.clear()
-        allPostsList.addAll(notes)
+        allPostsList.addAll(posts)
         // TODO use diffutil
         notifyDataSetChanged()
     }

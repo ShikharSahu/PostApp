@@ -3,11 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:cardCornerRadius="50dp"
+        app:cardElevation="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,6 +22,9 @@
                 android:id="@+id/postImage"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
                 android:maxHeight="500dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +38,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="TextView"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/postTitle" />
 
@@ -44,7 +49,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="TextView"
-                android:textSize="16sp"
+                android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,6 +60,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="TextView"
+                android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/postTime" />
         </androidx.constraintlayout.widget.ConstraintLayout>

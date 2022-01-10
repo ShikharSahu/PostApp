@@ -14,15 +14,17 @@ import com.example.postapp.viewmodels.PostMainViewModel
 import android.widget.Toast
 
 import android.app.ListActivity
+import androidx.activity.viewModels
 
 import androidx.recyclerview.widget.RecyclerView
 
 import androidx.recyclerview.widget.ItemTouchHelper
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(),  SearchView.OnQueryTextListener {
 
-    private lateinit var viewModel: PostMainViewModel
+    private val viewModel: PostMainViewModel by viewModels()
     private lateinit var binding : ActivityMainBinding
     private lateinit var adapter : PostMainRVAdapter
 
@@ -32,13 +34,13 @@ class MainActivity : AppCompatActivity(),  SearchView.OnQueryTextListener {
         setContentView(binding.root)
 
         binding.postMainRv.layoutManager = LinearLayoutManager(this)
-        adapter = PostMainRVAdapter()
+        adapter = PostMainRVAdapter(applicationContext)
         binding.postMainRv.adapter = adapter
 
 
-        viewModel = ViewModelProvider(this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(PostMainViewModel::class.java)
+//        viewModel = ViewModelProvider(this,
+//            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+//        ).get(PostMainViewModel::class.java)
 
         viewModel.getAllPost().observe(this, Observer {it1->
             it1?.let {
@@ -50,6 +52,9 @@ class MainActivity : AppCompatActivity(),  SearchView.OnQueryTextListener {
             val intent = Intent(this, AddPostActivity::class.java)
             startActivity(intent)
         }
+
+        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(binding.postMainRv)
     }
 
 
@@ -86,27 +91,32 @@ class MainActivity : AppCompatActivity(),  SearchView.OnQueryTextListener {
     }
 
 
-//    var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
-//        ItemTouchHelper.SimpleCallback(
-//            0,
-//            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT or ItemTouchHelper.DOWN or ItemTouchHelper.UP
-//        ) {
-//        override fun onMove(
-//            recyclerView: RecyclerView,
-//            viewHolder: RecyclerView.ViewHolder,
-//            target: RecyclerView.ViewHolder
-//        ): Boolean {
-//            Toast.makeText(this@ListActivity, "on Move", Toast.LENGTH_SHORT).show()
-//            return false
-//        }
-//
-//        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-//            Toast.makeText(this@ListActivity, "on Swiped ", Toast.LENGTH_SHORT).show()
-//            //Remove swiped item from list and notify the RecyclerView
-//            val position = viewHolder.adapterPosition
-//            arrayList.remove(position)
-//            adapter.notifyDataSetChanged()
-//        }
-//    }
+    var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
+        ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+            Toast.makeText(baseContext, "on Swiped ", Toast.LENGTH_SHORT).show()
+            //Remove swiped item from list and notify the RecyclerView
+            val position = viewHolder.adapterPosition
+            when (swipeDir){
+                ItemTouchHelper.LEFT->{
+                    viewModel.deletePost(position)
+                }
+                ItemTouchHelper.RIGHT->{
+
+                }
+            }
+        }
+    }
 
 }
