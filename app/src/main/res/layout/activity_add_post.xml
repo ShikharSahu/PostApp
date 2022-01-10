@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddPostActivity">
+
+  <EditText
+      android:id="@+id/ETaddPostTitle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginTop="32dp"
+      android:layout_marginEnd="24dp"
+      android:ems="10"
+      android:hint="Title"
+      android:inputType="textPersonName"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:ignore="TouchTargetSizeCheck" />
+
+  <EditText
+      android:id="@+id/ETaddPostDescription"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginTop="32dp"
+      android:layout_marginEnd="24dp"
+      android:ems="10"
+      android:hint="Description"
+      android:inputType="textPersonName"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/ETaddPostTitle" />
+
+  <Button
+      android:id="@+id/btnAddPostchooseFromCam"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="32dp"
+      android:text="camera"
+      app:layout_constraintEnd_toStartOf="@+id/btnChooseFromGallery"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/ETaddPostDescription" />
+
+  <Button
+      android:id="@+id/btnChooseFromGallery"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Gallery"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toEndOf="@+id/btnAddPostchooseFromCam"
+      app:layout_constraintTop_toTopOf="@+id/btnAddPostchooseFromCam" />
+
+  <Button
+      android:id="@+id/btnAddPostSubmit"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="32dp"
+      android:text="Button"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+  <ImageView
+      android:id="@+id/ivAddPostSelectedPicture"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_launcher_background"
+      app:layout_constraintBottom_toTopOf="@+id/btnAddPostSubmit"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/btnAddPostchooseFromCam" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
